@@ -12,8 +12,8 @@ use super::screen::Screen;
 
 #[derive(Debug)]
 pub struct Droplet {
-    column: u16,
     row: u16,
+    column: u16,
     length: u16,
     speed: Duration,
     last_update: Instant,
@@ -21,13 +21,12 @@ pub struct Droplet {
 }
 
 impl Droplet {
-    pub fn new(column: u16, length: u16, speed: Duration, rng: &mut ThreadRng) -> Self {
-        let row = 0;
+    pub fn new(row: u16, column: u16, length: u16, speed: Duration, rng: &mut ThreadRng) -> Self {
         let mut trace = VecDeque::with_capacity(length.into());
         trace.push_back(Droplet::draw_letter(rng));
         Self {
-            column,
             row,
+            column,
             length,
             speed,
             last_update: Instant::now(),
