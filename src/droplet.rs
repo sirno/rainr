@@ -45,12 +45,13 @@ impl Droplet {
 
             let fac =
                 f32::from(self.length.abs_diff(idx.try_into().unwrap())) / f32::from(self.length);
+            let base = if idx == 0 { 200 } else { 0 };
 
             screen.write_at_pos(
                 style(*character).with(Color::Rgb {
-                    r: 0,
+                    r: base,
                     g: (fac * 255.) as u8,
-                    b: 0,
+                    b: base,
                 }),
                 row,
                 self.column.into(),
@@ -94,9 +95,5 @@ impl Droplet {
 
     pub fn is_full(&self) -> bool {
         self.trace.len() >= self.length.into()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.trace.len() <= 0
     }
 }

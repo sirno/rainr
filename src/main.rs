@@ -5,6 +5,7 @@ mod screen;
 use droplet::Droplet;
 use screen::Screen;
 
+use clap::Parser;
 use crossterm::event::{poll, read, Event, KeyCode, KeyEvent, KeyModifiers};
 use crossterm::terminal;
 use crossterm::{self, cursor, execute};
@@ -15,7 +16,21 @@ use std::collections::vec_deque::VecDeque;
 use std::io::{stdout, BufWriter, Write};
 use std::time::Duration;
 
+#[derive(Parser, Debug)]
+#[clap(about, version, author)]
+struct Args {
+    #[clap(long, default_value_t = 0.7)]
+    density: f64,
+
+    #[clap(long, default_value_t = 1000)]
+    max_speed: u64,
+
+    #[clap(long, default_value_t = 50)]
+    min_speed: u64,
+}
+
 fn main() -> crossterm::Result<()> {
+    let args = Args::parse();
     let mut stdout = BufWriter::with_capacity(100, stdout());
 
     execute!(stdout, terminal::EnterAlternateScreen, cursor::Hide)?;
@@ -30,7 +45,7 @@ fn main() -> crossterm::Result<()> {
     let rate_distribution: Uniform<f64> = Uniform::new(0., 1.);
     let columns_distribution = Uniform::new(0u16, width);
     let length_distribution = Uniform::new(1u16, height / 2);
-    let speed_distribution = Uniform::new(50u64, 2000u64);
+    let speed_distribution = Uniform::new(args.min_speed, args.max_speed);
 
     let mut droplets: VecDeque<Box<RefCell<Droplet>>> = VecDeque::new();
 
@@ -54,7 +69,7 @@ fn main() -> crossterm::Result<()> {
             }
         }
 
-        if rng.sample::<f64, _>(rate_distribution) < 0.7 {
+        if rng.sample::<f64, _>(rate_distribution) < args.density {
             droplets.push_back(Box::new(RefCell::new(Droplet::new(
                 rng.sample::<u16, _>(columns_distribution),
                 rng.sample::<u16, _>(length_distribution),
