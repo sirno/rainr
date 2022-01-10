@@ -20,7 +20,31 @@ pub struct Droplet {
     trace: VecDeque<char>,
 }
 
+pub struct DropletColor {
+    red: f32,
+    green: f32,
+    blue: f32,
+}
+
+impl DropletColor {
+    pub fn new(red: f32, green: f32, blue: f32) -> Self {
+        Self { red, green, blue }
+    }
+}
+
 impl Droplet {
+    const ORIGIN_COLOR: DropletColor = DropletColor {
+        red: 200.,
+        green: 255.,
+        blue: 200.,
+    };
+
+    const TRACE_COLOR: DropletColor = DropletColor {
+        red: 0.,
+        green: 255.,
+        blue: 0.,
+    };
+
     pub fn new(row: u16, column: u16, length: u16, speed: Duration, rng: &mut ThreadRng) -> Self {
         let mut trace = VecDeque::with_capacity(length.into());
         trace.push_back(Droplet::draw_letter(rng));
@@ -44,13 +68,17 @@ impl Droplet {
 
             let fac =
                 f32::from(self.length.abs_diff(idx.try_into().unwrap())) / f32::from(self.length);
-            let base = if idx == 0 { 200 } else { 0 };
+            let base = if idx == 0 {
+                Droplet::ORIGIN_COLOR
+            } else {
+                Droplet::TRACE_COLOR
+            };
 
             screen.write_at_pos(
                 style(*character).with(Color::Rgb {
-                    r: base,
-                    g: (fac * 255.) as u8,
-                    b: base,
+                    r: (fac * base.red) as u8,
+                    g: (fac * base.green) as u8,
+                    b: (fac * base.blue) as u8,
                 }),
                 row,
                 self.column.into(),

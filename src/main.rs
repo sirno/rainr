@@ -1,4 +1,4 @@
-#![feature(int_abs_diff)]
+#![feature(int_abs_diff, once_cell)]
 mod droplet;
 mod screen;
 
@@ -72,6 +72,10 @@ fn main() -> crossterm::Result<()> {
 
     loop {
         if poll(Duration::from_millis(20))? {
+            // if let Ok(Event::Key(KeyEvent {
+            //     code: KeyCode::Char('q'),
+            //     modifiers: KeyModifiers::NONE,
+            // })) = read() { break; }
             match read() {
                 Ok(Event::Key(KeyEvent {
                     code: KeyCode::Char('q'),
@@ -123,8 +127,6 @@ fn main() -> crossterm::Result<()> {
 
             if !remove_item {
                 droplets.push_front(front_droplet_ref);
-            } else {
-                drop(front_droplet_ref);
             }
 
             remove_item && !droplets.is_empty()
