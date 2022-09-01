@@ -2,10 +2,10 @@
 name = "rainr"
 version = "0.1.0"
 edition = "2021"
-authors = ["Nicolas Ochsner <nicolas.ochsner@env.ethz.ch>"]
+authors = ["nico <nicos.letters@gmail.com>"]
 description = "Rainer likes dense matrix rain."
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+repository = "https://github.com/sirno/rainr"
+license = "MIT"
 
 [dependencies]
 crossterm = "0.22.1"
