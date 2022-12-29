@@ -26,12 +26,6 @@ pub struct DropletColor {
     blue: f32,
 }
 
-impl DropletColor {
-    pub fn new(red: f32, green: f32, blue: f32) -> Self {
-        Self { red, green, blue }
-    }
-}
-
 impl Droplet {
     const ORIGIN_COLOR: DropletColor = DropletColor {
         red: 200.,

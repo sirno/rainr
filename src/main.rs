@@ -1,4 +1,4 @@
-#![feature(int_abs_diff, once_cell)]
+#![feature(once_cell)]
 mod droplet;
 mod screen;
 
@@ -72,10 +72,6 @@ fn main() -> crossterm::Result<()> {
 
     loop {
         if poll(Duration::from_millis(20))? {
-            // if let Ok(Event::Key(KeyEvent {
-            //     code: KeyCode::Char('q'),
-            //     modifiers: KeyModifiers::NONE,
-            // })) = read() { break; }
             match read() {
                 Ok(Event::Key(KeyEvent {
                     code: KeyCode::Char('q'),
@@ -113,6 +109,8 @@ fn main() -> crossterm::Result<()> {
 
         screen.draw(&mut stdout)?;
 
+        let interval = Duration::from_millis(10);
+
         while {
             let front_droplet_ref = droplets.pop_front().unwrap();
             let front_droplet_raw = &front_droplet_ref as *const _;
@@ -130,7 +128,9 @@ fn main() -> crossterm::Result<()> {
             }
 
             remove_item && !droplets.is_empty()
-        } {}
+        } {
+            std::thread::sleep(interval);
+        }
 
         stdout.flush()?;
     }
