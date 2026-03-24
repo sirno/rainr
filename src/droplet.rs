@@ -3,7 +3,7 @@ use crossterm::{
     terminal,
 };
 use ezemoji::{EZEmoji, Japanese};
-use rand::prelude::SliceRandom;
+use rand::prelude::*;
 use rand::rngs::ThreadRng;
 use std::collections::VecDeque;
 use std::time::{Duration, Instant};
@@ -16,7 +16,7 @@ pub struct Droplet {
     column: u16,
     length: u16,
     speed: Duration,
-    last_update: Instant,
+    pub next_update: Instant,
     trace: VecDeque<char>,
 }
 
@@ -47,7 +47,7 @@ impl Droplet {
             column,
             length,
             speed,
-            last_update: Instant::now(),
+            next_update: Instant::now() + speed,
             trace,
         }
     }
@@ -81,11 +81,11 @@ impl Droplet {
     }
 
     pub fn tick(&mut self, rng: &mut ThreadRng) -> crossterm::Result<()> {
-        if self.last_update.elapsed() < self.speed {
+        if self.next_update > Instant::now() {
             return Ok(());
         }
 
-        self.row = self.row + 1;
+        self.row += 1;
 
         if self.is_full() {
             self.trace.pop_front();
@@ -95,7 +95,7 @@ impl Droplet {
             self.trace.push_back(Droplet::draw_letter(rng));
         }
 
-        self.last_update = Instant::now();
+        self.next_update += self.speed;
 
         Ok(())
     }

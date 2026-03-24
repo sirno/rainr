@@ -10,5 +10,6 @@ license = "MIT"
 [dependencies]
 crossterm = "0.22.1"
 clap = { version = "3.0.5", features = ["derive"] }
-rand = "0.8.4"
+rand = "0.10.0"
+rand_distr = "0.6.0"
 ezemoji = "0.2.1"
